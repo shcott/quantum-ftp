@@ -1,7 +1,3 @@
 [
-{
-	"id": "test",
-	"caption": "Test",
-	"command": "test"
-}
+	{ "id": "test", "command": "test", "caption": "Test" }
 ]
