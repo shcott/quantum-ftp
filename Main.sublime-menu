@@ -1,0 +1,11 @@
+[
+{
+	"id": "quantum",
+	"caption": "Quantum",
+	"children": [
+		{"id":"hello", "caption": "Connect", "command": "connect"},
+		{"id":"settings", "caption": "Settings – Default", "command": "default_settings"},
+		{"id":"settings", "caption": "Settings – User", "command": "user_settings"}
+	]
+}
+]
