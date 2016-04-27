@@ -1,9 +1,10 @@
 [
 {
 	"id": "quantum",
+	"mnemonic": "Q",
 	"caption": "Quantum",
 	"children": [
-		{ "command": "connect", "caption": "Connect" },
+		{ "command": "connect", "mnemonic": "C", "caption": "Connect" },
 		{ "id": "settings", "caption": "-" },
 		{ "command": "default_settings", "caption": "Settings – Default" },
 		{ "command": "user_settings", "caption": "Settings – User" }
