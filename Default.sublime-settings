@@ -1,5 +1,5 @@
 {
-	"quantum_username": "",
-	"quantum_host": "",
-	"quantum_port": 21
+	"username": "",
+	"host": "",
+	"port": 21
 }
