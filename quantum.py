@@ -2,10 +2,6 @@ import sublime, sublime_plugin
 # from ftplib import FTP
 import ftplib
 
-class TestCommand(sublime_plugin.WindowCommand):
-	def run(self):
-		self.window.new_file()
-
 
 class ConnectCommand(sublime_plugin.WindowCommand):
 	def run(self):
@@ -20,7 +16,7 @@ class ConnectCommand(sublime_plugin.WindowCommand):
 			self.host = userSettings.get("host")
 		self.port = defaultSettings.get("port")
 		port = userSettings.get("port")
-		if port != 0:
+		if port != None:
 			self.port = port;
 
 		self.count = 0
@@ -61,10 +57,13 @@ class ConnectCommand(sublime_plugin.WindowCommand):
 	def on_cancel(self):
 		self.inputView = None
 		self.password = ""
+		self.count = 0
+		print("Connection canceled.")
+		self.window.run_command("show_panel", {"panel": "console"})
 
 	def on_done(self, input):
 		self.inputView = None
-		# print("Password: {!s}".format(self.password))
+		self.count = 0
 
 		# output = self.window.create_output_panel("quantum")
 		# self.window.run_command("show_panel", {"panel": "output.quantum", "toggle": True})
@@ -72,15 +71,12 @@ class ConnectCommand(sublime_plugin.WindowCommand):
 		sublime.set_timeout_async(self.connect)
 
 	def connect(self):
-		print("Connecting to {!s}@{!s}".format(self.username, self.host))
-
 		ftp = ftplib.FTP()
+		print("Connecting to {!s}@{!s}..".format(self.username, self.host))
 		ftp.connect(self.host, self.port)
-		if username == "":
-			if password == "":
-				ftp.login()
-		else:
-			ftp.login(self.username, self.password)
+		print("Logging in..")
+		ftp.login(self.username, self.password)
+		self.password = ""
 
 		ftp.retrlines('LIST')
 
@@ -106,6 +102,11 @@ class UserSettingsCommand(sublime_plugin.WindowCommand):
 		settingsView = self.window.open_file("../User/QuantumFTP.sublime-settings")
 
 
-# class Test(sublime_plugin.EventListener):
+# class FileEventListener(sublime_plugin.EventListener):
 # 	def onPostSave(view):
 # 		print view.fileName(), "Saved!"
+
+
+class TestCommand(sublime_plugin.WindowCommand):
+	def run(self):
+		self.window.new_file()
