@@ -1,10 +1,10 @@
 import sublime, sublime_plugin
-# from ftplib import FTP
 import ftplib
 
 
 class ConnectCommand(sublime_plugin.WindowCommand):
 	def run(self):
+		print("Loading settings..")
 		defaultSettings = sublime.load_settings("Default.sublime-settings");
 		userSettings = sublime.load_settings("QuantumFTP.sublime-settings");
 
@@ -25,7 +25,7 @@ class ConnectCommand(sublime_plugin.WindowCommand):
 
 	def on_change(self, input):
 		self.count += 1
-		if self.count > 100:
+		if self.count > 1000:
 			self.count = 0
 			print("Recursive loop bug; please fix")
 			return
