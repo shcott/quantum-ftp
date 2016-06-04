@@ -1,5 +1,46 @@
 import sublime, sublime_plugin
+from subprocess import Popen, PIPE, check_output
 import ftplib
+
+# import sys, os
+# sys.path.append(os.path.join(os.path.dirname(__file__), "lib"))
+# import paramiko
+# import pyssh
+
+class ConnectSFTP:
+	def connect(self, host, port, username, password):
+		return
+
+class ConnectPSFTP(ConnectSFTP):
+	def connect(self, host, port, username, password):
+		command = "psftp {!s}".format(host)
+		if port != 22:
+			command += " -P {0}".format(port)
+		if username != "":
+			command += " -l {!s}".format(username)
+		if password != "":
+			command += " -pw {!s}".format(password)
+
+		# p = subprocess.Popen(command.split(), stdin=subprocess.PIPE, stdout=subprocess.PIPE)
+		# p.stdin.write(b"ls Documents\n")
+		# p.stdin.write(b"bye\n")
+		# p.stdin.close()
+
+		# print(output)
+
+		with Popen(command.split(), stdin=PIPE, stdout=PIPE, universal_newlines=True, bufsize=1) as p:
+			print(p.stdout.readline())
+			p.stdin.write("ls Documents\n")
+			p.stdin.flush()
+			print(p.stdout.readline())
+
+class ConnectFtplib(ConnectSFTP):
+	def connect(self, host, port, username, password):
+		ftp = ftplib.FTP()
+		print("Connecting to {!s}@{!s}..".format(username, host))
+		ftp.connect(host, port)
+		print("Logging in..")
+		ftp.login(username, password)
 
 
 class ConnectCommand(sublime_plugin.WindowCommand):
@@ -8,9 +49,6 @@ class ConnectCommand(sublime_plugin.WindowCommand):
 		defaultSettings = sublime.load_settings("Default.sublime-settings");
 		userSettings = sublime.load_settings("QuantumFTP.sublime-settings");
 
-		self.username = defaultSettings.get("username")
-		if self.username == "":
-			self.username = userSettings.get("username")
 		self.host = defaultSettings.get("host")
 		if self.host == "":
 			self.host = userSettings.get("host")
@@ -18,6 +56,9 @@ class ConnectCommand(sublime_plugin.WindowCommand):
 		port = userSettings.get("port")
 		if port != None:
 			self.port = port;
+		self.username = defaultSettings.get("username")
+		if self.username == "":
+			self.username = userSettings.get("username")
 
 		self.count = 0
 		self.password = ""
@@ -71,14 +112,8 @@ class ConnectCommand(sublime_plugin.WindowCommand):
 		sublime.set_timeout_async(self.connect)
 
 	def connect(self):
-		ftp = ftplib.FTP()
-		print("Connecting to {!s}@{!s}..".format(self.username, self.host))
-		ftp.connect(self.host, self.port)
-		print("Logging in..")
-		ftp.login(self.username, self.password)
-		self.password = ""
-
-		ftp.retrlines('LIST')
+		c = ConnectPSFTP()
+		c.connect(self.host, self.port, self.username, self.password)
 
 
 class HidePasswordCommand(sublime_plugin.TextCommand):
@@ -95,7 +130,6 @@ class DefaultSettingsCommand(sublime_plugin.WindowCommand):
 	def run(self):
 		settingsView = self.window.open_file("Default.sublime-settings")
 		settingsView.set_read_only(True)
-
 
 class UserSettingsCommand(sublime_plugin.WindowCommand):
 	def run(self):
