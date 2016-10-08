@@ -1,33 +1,13 @@
 import sublime, sublime_plugin
 
 import sys, os
-sys.path.append(os.path.join(os.path.dirname(__file__), "pexpect-4.2.1"))
+sys.path.append(os.path.join(os.path.dirname(__file__), "paramiko"))
 
-import pexpect
+import paramiko
 
 class ConnectSFTP:
 	def connect(self, host, port, username, password):
-		sftp_opts = ["-o", "PasswordAuthentication=yes", "%s@%s" % (username, host)]
-		p = pexpect.spawn("stfp", sftp_opts);
-		p.logfile = sys.stdout;
-
-		try:
-			p.expect("(?i)password:")
-			x = p.sendline(password)
-			x = p.expect(["Permission denied", "sftp&gt;"])
-			if x == 0:
-				print("Permission denied")
-				p.kill(0)
-			else:
-				x = p.sendline("ls")
-				x = p.expect("sftp&gt;")
-				print(x)
-				x = p.isalive()
-				x = p.close()
-		except pexpect.EOF:
-			print("Reached end of file")
-		except pexpect.TIMEOUT:
-			print("STFP timed out")
+		pass
 
 
 class ConnectCommand(sublime_plugin.WindowCommand):
