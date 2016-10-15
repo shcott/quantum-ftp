@@ -1,9 +1,9 @@
 import sublime, sublime_plugin
 
 import sys, os
-sys.path.append(os.path.join(os.path.dirname(__file__), "paramiko"))
+sys.path.append(os.path.join(os.path.dirname(__file__), "pyssh-ctypes-0.3"))
 
-import paramiko
+import pyssh
 
 class ConnectSFTP:
 	def connect(self, host, port, username, password):
